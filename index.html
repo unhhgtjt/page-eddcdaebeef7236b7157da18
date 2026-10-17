@@ -1,0 +1,335 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>翻云梯 - 数据路由与网络传输服务配置规范</title><meta name="description" content="翻云梯是一套面向跨网络数据分发与链路代理的配置管理系统。本页面提供翻云梯各项服务规格、订阅参数定义、客户端部署步骤及技术维护说明。"><meta name="keywords" content="翻云梯, 订阅协议, 传输配额, 路由节点, 终端参数, 网络手册"><meta name="robots" content="index,follow"><link rel="canonical" href="https://p-41f8c9bd81.khdtate.cn/"><meta property="og:type" content="website"><meta property="og:title" content="翻云梯 - 数据路由与网络传输服务配置规范"><meta property="og:description" content="翻云梯是一套面向跨网络数据分发与链路代理的配置管理系统。本页面提供翻云梯各项服务规格、订阅参数定义、客户端部署步骤及技术维护说明。"><meta property="og:url" content="https://p-41f8c9bd81.khdtate.cn/"><meta property="og:site_name" content="翻云梯"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "url": "https://p-41f8c9bd81.khdtate.cn/", "name": "翻云梯 - 数据路由与网络传输服务配置规范", "description": "翻云梯是一套面向跨网络数据分发与链路代理的配置管理系统。本页面提供翻云梯各项服务规格、订阅参数定义、客户端部署步骤及技术维护说明。", "inLanguage": "zh-CN"}</script><meta name="publisher-task" content="eddcdaebeef7236b7157da18:dc9972497f98eeb37bb417d10d314a20cd2a3edea5d80a4376b7d36045b512f3:4b2eb0658e5266994ed9"></head><body id="top"><style>
+:root {--bg-primary: #07080a;--bg-secondary: #0f1115;--bg-subtle: #14171d;--accent: #00ff66;--accent-dim: #00b347;--accent-soft: rgba(0, 255, 102, 0.08);--text-main: #e6e9ee;--text-muted: #838a95;--text-dark: #4e5562;--line: #1c2028;--font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;--font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif}
+* {box-sizing: border-box;margin: 0;padding: 0}
+html {background-color: var(--bg-primary);color: var(--text-main);font-family: var(--font-sans);font-size: 15px;line-height: 1.6;-webkit-font-smoothing: antialiased}
+a {color: inherit;text-decoration: none}
+.nav-strip {position: sticky;top: 0;z-index: 100;height: 42px;background-color: rgba(7, 8, 10, 0.92);border-bottom: 1px solid var(--line);display: flex;align-items: center;justify-content: space-between;padding: 0 32px;font-family: var(--font-mono);font-size: 12px;letter-spacing: 0.04em}
+.nav-brand {color: var(--accent);font-weight: 700;display: flex;align-items: center;gap: 8px}
+.nav-brand::before {content: "";display: inline-block;width: 6px;height: 6px;background-color: var(--accent)}
+.nav-links {display: flex;gap: 24px;list-style: none}
+.nav-links a {color: var(--text-muted)}
+.nav-links a:hover {color: var(--accent)}
+main {width: 100%}
+.hero-layout {min-height: calc(85vh - 42px);display: grid;grid-template-columns: 460px 1fr;padding: 80px 32px;max-width: 1360px;margin: 0 auto}
+.hero-content {display: flex;flex-direction: column;justify-content: flex-start;padding-right: 48px}
+.hero-meta {font-family: var(--font-mono);font-size: 12px;color: var(--accent);text-transform: uppercase;margin-bottom: 16px;letter-spacing: 0.1em}
+h1.brand-title {font-size: 34px;font-weight: 600;letter-spacing: -0.02em;color: #ffffff;line-height: 1.25;margin-bottom: 24px}
+.hero-desc {color: var(--text-muted);font-size: 15px;line-height: 1.7;margin-bottom: 36px}
+.hero-params {font-family: var(--font-mono);font-size: 12px;border-top: 1px solid var(--line);padding-top: 20px;display: flex;flex-direction: column;gap: 10px;color: var(--text-muted)}
+.hero-params-row {display: flex;justify-content: space-between}
+.hero-params-row span:last-child {color: var(--text-main)}
+.hero-actions {margin-top: 36px;display: flex;gap: 16px}
+.btn-primary {display: inline-block;background-color: var(--accent);color: #000000;padding: 10px 20px;font-size: 13px;font-weight: 600;font-family: var(--font-mono);text-transform: uppercase}
+.btn-primary:hover {background-color: #33ff85}
+.btn-secondary {display: inline-block;background-color: transparent;color: var(--text-main);padding: 10px 20px;font-size: 13px;font-family: var(--font-mono);border: 1px solid var(--line)}
+.btn-secondary:hover {border-color: var(--text-muted)}
+.hero-void {position: relative;border-left: 1px solid var(--line);padding-left: 64px;display: flex;flex-direction: column;justify-content: flex-end;color: var(--text-dark);font-family: var(--font-mono);font-size: 11px}
+.void-tag {align-self: flex-start;margin-bottom: auto;padding-top: 8px}
+.content-wrapper {max-width: 1360px;margin: 0 auto;padding: 0 32px 100px 32px}
+section {padding-top: 90px}
+.section-header {margin-bottom: 40px}
+.section-tag {font-family: var(--font-mono);font-size: 11px;color: var(--accent);margin-bottom: 6px;text-transform: uppercase;letter-spacing: 0.08em}
+h2.section-title {font-size: 20px;font-weight: 500;color: #ffffff;letter-spacing: -0.01em}
+.section-intro {color: var(--text-muted);font-size: 13px;margin-top: 6px;max-width: 680px}
+.table-container {width: 100%;overflow-x: auto;margin-top: 24px}
+table.plans-table {width: 100%;border-collapse: collapse;text-align: left;font-size: 14px}
+table.plans-table th,
+table.plans-table td {padding: 20px 24px;vertical-align: top}
+table.plans-table thead tr {border-bottom: 2px solid var(--line)}
+table.plans-table th {font-family: var(--font-mono);font-size: 12px;font-weight: 500;color: var(--text-muted);text-transform: uppercase}
+table.plans-table th.col-feature {width: 22%;color: var(--text-dark)}
+table.plans-table th.col-plan {width: 26%;color: var(--text-main)}
+table.plans-table th.col-plan.featured {color: var(--accent)}
+table.plans-table tbody tr {border-bottom: 1px solid var(--line)}
+table.plans-table tbody tr:last-child {border-bottom: none}
+table.plans-table td.feature-label {font-family: var(--font-mono);font-size: 13px;color: var(--text-muted)}
+table.plans-table td.plan-cell {color: var(--text-main)}
+.price-block {font-family: var(--font-mono)}
+.price-main {font-size: 20px;font-weight: 700;color: #ffffff}
+.price-sub {font-size: 12px;color: var(--text-muted);margin-top: 4px}
+.tag-flag {display: inline-block;font-size: 10px;padding: 2px 6px;background-color: var(--accent-soft);color: var(--accent);font-family: var(--font-mono);margin-left: 8px;vertical-align: middle}
+.spec-list {list-style: none;font-size: 13px;line-height: 1.8;color: var(--text-muted)}
+.spec-list li::before {content: "— ";color: var(--text-dark)}
+.steps-grid {display: grid;grid-template-columns: repeat(4, 1fr);gap: 40px}
+.step-card {display: flex;flex-direction: column}
+.step-index {font-family: var(--font-mono);font-size: 12px;color: var(--accent);margin-bottom: 16px}
+.step-card h3 {font-size: 15px;font-weight: 500;color: #ffffff;margin-bottom: 10px}
+.step-card p {font-size: 13px;color: var(--text-muted);line-height: 1.6}
+.clients-grid {display: grid;grid-template-columns: repeat(3, 1fr);gap: 48px}
+.client-box {display: flex;flex-direction: column}
+.client-box h3 {font-size: 15px;font-weight: 500;color: #ffffff;margin-bottom: 8px;display: flex;align-items: center;justify-content: space-between}
+.client-box .badge {font-family: var(--font-mono);font-size: 11px;color: var(--text-dark)}
+.client-box p {font-size: 13px;color: var(--text-muted);line-height: 1.6;margin-bottom: 16px}
+.client-spec {font-family: var(--font-mono);font-size: 12px;color: var(--text-muted);border-top: 1px solid var(--line);padding-top: 12px;margin-top: auto}
+.client-link {color: var(--accent);font-family: var(--font-mono);font-size: 12px;margin-top: 8px;display: inline-block}
+.client-link:hover {text-decoration: underline}
+.faq-grid {display: grid;grid-template-columns: 1fr 1fr;gap: 48px 64px}
+.faq-item {display: flex;flex-direction: column}
+.faq-item h3 {font-size: 15px;font-weight: 500;color: #ffffff;margin-bottom: 12px;line-height: 1.4}
+.faq-item p {font-size: 13px;color: var(--text-muted);line-height: 1.7}
+footer {border-top: 1px solid var(--line);padding: 48px 32px;max-width: 1360px;margin: 0 auto;font-family: var(--font-mono);font-size: 12px;color: var(--text-dark);display: flex;justify-content: space-between;align-items: center}
+footer a {color: var(--text-muted)}
+footer a:hover {color: var(--accent)}
+@media (max-width: 960px) {
+  .hero-layout {grid-template-columns: 1fr;padding: 48px 20px}
+  .hero-content {padding-right: 0}
+  .hero-void {display: none}
+  .content-wrapper {padding: 0 20px 60px 20px}
+  .steps-grid {grid-template-columns: 1fr 1fr;gap: 32px}
+  .clients-grid {grid-template-columns: 1fr;gap: 32px}
+  .faq-grid {grid-template-columns: 1fr;gap: 32px}
+  table.plans-table th, table.plans-table td {padding: 14px 16px}
+}
+@media (max-width: 600px) {
+  .nav-strip {padding: 0 16px}
+  .nav-links {gap: 14px}
+  .steps-grid {grid-template-columns: 1fr}
+  h1.brand-title {font-size: 26px}
+}
+</style><header class="nav-strip">
+  <div class="nav-brand">翻云梯 / DOCS</div>
+  <nav>
+    <ul class="nav-links">
+      <li><a href="#plans">规格矩阵</a></li>
+      <li><a href="#workflow">接入规程</a></li>
+      <li><a href="#clients">终端支持</a></li>
+      <li><a href="#faq">常见问题</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <div class="hero-layout">
+    <div class="hero-content">
+      <div class="hero-meta">配置文档编号 8310 / 传输协议规范</div>
+      <h1 class="brand-title">翻云梯 链路代理与网络调度配置规范</h1>
+      <p class="hero-desc">翻云梯面向分布式网络环境提供统一的代理规则下发与流量分流方案。本文档记录基础版、旗舰版与团队版的技术指标、客户端订阅结构以及运维排查准则。</p>
+      
+      <div class="hero-params">
+        <div class="hero-params-row">
+          <span>当前协议栈版本</span>
+          <span>Core 4.2 / TLS 1.3</span>
+        </div>
+        <div class="hero-params-row">
+          <span>订阅解析模式</span>
+          <span>Base64 / Standard JSON</span>
+        </div>
+        <div class="hero-params-row">
+          <span>节点路由策略</span>
+          <span>规则驱动 / 域名黑白名单</span>
+        </div>
+      </div>
+
+      <div class="hero-actions">
+        <a href="#plans" class="btn-primary">调取方案参数</a>
+        <a href="#workflow" class="btn-secondary">查看操作步骤</a>
+      </div>
+    </div>
+    
+    <div class="hero-void">
+      <div class="void-tag">[ BUFFER ZONE - RESERVED NEGATIVE SPACE ]</div>
+      <p>系统状态：所有接口保持被动监听。<br>
+      更新时钟：UTC+8 00:00:00<br>
+      无外部探针干扰。</p>
+    </div>
+  </div>
+
+  <div class="content-wrapper">
+    
+    <section id="plans">
+      <div class="section-header">
+        <div class="section-tag">Specifications Matrix</div>
+        <h2 class="section-title">服务规格与资费对比</h2>
+        <p class="section-intro">以下参数依据当前系统订阅数据库生成，包含月度周期结算基准、带宽配额上限及连接设备限制。</p>
+      </div>
+
+      <div class="table-container">
+        <table class="plans-table">
+          <thead>
+            <tr>
+              <th class="col-feature">技术指标</th>
+              <th class="col-plan">基础版</th>
+              <th class="col-plan featured">旗舰版 <span class="tag-flag">推荐</span></th>
+              <th class="col-plan">团队版</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="feature-label">结算资费 (月付)</td>
+              <td class="plan-cell">
+                <div class="price-block">
+                  <div class="price-main">¥15</div>
+                  <div class="price-sub">每月计费</div>
+                </div>
+              </td>
+              <td class="plan-cell">
+                <div class="price-block">
+                  <div class="price-main">¥35</div>
+                  <div class="price-sub">每月计费</div>
+                </div>
+              </td>
+              <td class="plan-cell">
+                <div class="price-block">
+                  <div class="price-main">¥85</div>
+                  <div class="price-sub">每月计费</div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="feature-label">长期订阅折算 (年付)</td>
+              <td class="plan-cell">按年付仅需 ¥150/年</td>
+              <td class="plan-cell">按年付仅需 ¥350/年</td>
+              <td class="plan-cell">按年付仅需 ¥850/年</td>
+            </tr>
+            <tr>
+              <td class="feature-label">周期数据配额</td>
+              <td class="plan-cell">每月 100GB 传输流量</td>
+              <td class="plan-cell">每月 300GB 传输流量</td>
+              <td class="plan-cell">每月 1000GB 传输流量</td>
+            </tr>
+            <tr>
+              <td class="feature-label">同时在线设备上限</td>
+              <td class="plan-cell">最多 3 台设备</td>
+              <td class="plan-cell">最多 5 台设备</td>
+              <td class="plan-cell">最多 20 台设备</td>
+            </tr>
+            <tr>
+              <td class="feature-label">网络链路与节点范围</td>
+              <td class="plan-cell">普通线路节点池</td>
+              <td class="plan-cell">IPLC 专线链路优化池</td>
+              <td class="plan-cell">VIP 专属高带宽节点池</td>
+            </tr>
+            <tr>
+              <td class="feature-label">流媒体协议解析</td>
+              <td class="plan-cell">基础流媒体访问支持</td>
+              <td class="plan-cell">全节点原生流媒体解锁支持</td>
+              <td class="plan-cell">企业定向分流与定制路由</td>
+            </tr>
+            <tr>
+              <td class="feature-label">服务响应层级</td>
+              <td class="plan-cell">标准工单排队队列</td>
+              <td class="plan-cell">7x24 优先工单支持</td>
+              <td class="plan-cell">专属客户经理技术对接</td>
+            </tr>
+            <tr>
+              <td class="feature-label">订阅操作入口</td>
+              <td class="plan-cell"><a href="#" class="btn-secondary">选择方案</a></td>
+              <td class="plan-cell"><a href="#" class="btn-primary">选择方案</a></td>
+              <td class="plan-cell"><a href="#" class="btn-secondary">选择方案</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="workflow">
+      <div class="section-header">
+        <div class="section-tag">Procedure &amp; Setup</div>
+        <h2 class="section-title">客户端接入规程</h2>
+        <p class="section-intro">翻云梯采用标准化通用协议接口分发网络节点配置，请遵循以下四步完成接入。</p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-index">01 / SUBSCRIBE</div>
+          <h3>获取分发订阅链接</h3>
+          <p>完成方案选择后，系统控制台将生成专属订阅 URL。该 URL 包含经过编码的节点清单及证书公钥，请妥善保存并避免外泄。</p>
+        </div>
+        <div class="step-card">
+          <div class="step-index">02 / COMPLIANCE</div>
+          <h3>配置环境核对</h3>
+          <p>确认本地设备的系统时钟同步处于毫秒级误差内。网络代理协议对时间戳握手有严格校验，时钟偏移可能导致握手中断。</p>
+        </div>
+        <div class="step-card">
+          <div class="step-index">03 / PARSE</div>
+          <h3>载入节点至解析端</h3>
+          <p>在支持对应协议的第三方或通用客户端中添加 Remote Subscription，粘贴翻云梯订阅地址，触发拉取并完成节点解析。</p>
+        </div>
+        <div class="step-card">
+          <div class="step-index">04 / ROUTING</div>
+          <h3>应用流量分流规则</h3>
+          <p>选用规则路由模式（Rule-based Routing），确保本地局域网与国内直连请求免走隧道，实现网络传输的分流优化。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="clients">
+      <div class="section-header">
+        <div class="section-tag">Platforms &amp; Protocols</div>
+        <h2 class="section-title">终端平台与兼容说明</h2>
+        <p class="section-intro">翻云梯基于业界开源协议标准传输，不强制绑定专有运行环境，各主流系统均可通过兼容工具进行配置。</p>
+      </div>
+
+      <div class="clients-grid">
+        <div class="client-box">
+          <h3>
+            <span>Windows 环境</span>
+            <span class="badge">WIN64</span>
+          </h3>
+          <p>支持通过通用规则客户端加载翻云梯订阅源。具备系统级代理托管与 TUN 虚拟网卡两种接管模式，适用于桌面全局或进程代理。</p>
+          <div class="client-spec">兼容协议：Shadowsocks / Trojan / VMess</div>
+          <a href="#" class="client-link">查看 Windows 配置参数参考 →</a>
+        </div>
+        <div class="client-box">
+          <h3>
+            <span>macOS 与 iOS 环境</span>
+            <span class="badge">DARWIN</span>
+          </h3>
+          <p>支持基于 NetworkExtension 框架的通用解析工具。在 iOS 设备上通过扫码即可同步节点资产，macOS 下支持规则热重载。</p>
+          <div class="client-spec">兼容协议：Shadowsocks / Trojan / Vless</div>
+          <a href="#" class="client-link">查看 Apple 平台接入说明 →</a>
+        </div>
+        <div class="client-box">
+          <h3>
+            <span>Linux 与 Android 环境</span>
+            <span class="badge">POSIX</span>
+          </h3>
+          <p>Android 平台支持分应用代理策略；Linux 环境支持无界面的守护进程（Daemon）模式运行，适合部署于路由器或网关节点。</p>
+          <div class="client-spec">兼容协议：Clash 内核 / Xray 内核规范</div>
+          <a href="#" class="client-link">查看 POSIX 环境脚本模板 →</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <div class="section-header">
+        <div class="section-tag">Frequently Asked Questions</div>
+        <h2 class="section-title">常见问题排查与技术释疑</h2>
+        <p class="section-intro">针对连接认证、配额计算与路由分发等典型运行状态的说明汇总。</p>
+      </div>
+
+      <div class="faq-grid">
+        <div class="faq-item">
+          <h3>翻云梯的配额重置周期如何计算？</h3>
+          <p>数据传输配额按账单周期进行自然更新。例如账单日起始于每月 15 日，则在下月 15 日 00:00 自动重置已用流量统计，未消耗的流量不结转至下一周期。</p>
+        </div>
+        <div class="faq-item">
+          <h3>多设备同时在线的判定机制是什么？</h3>
+          <p>系统服务端按当前正在保持 TCP 活跃长连接或处于有效会话窗口内的唯一公网 IP 与客户端标识符组合进行计数。超出套餐对应设备上限后，新发起的连接请求将被限流或等待排队。</p>
+        </div>
+        <div class="faq-item">
+          <h3>遇到节点不可达或连接超时时应如何检查？</h3>
+          <p>首先请检查客户端本地时钟是否与标准网络时间一致；其次，确认订阅链接是否已在客户端内执行“更新订阅”以同步最新的服务器地址与端口；最后，请排查本地防火墙是否拦截了出站代理端口。</p>
+        </div>
+        <div class="faq-item">
+          <h3>旗舰版专线与普通节点的技术区别为何？</h3>
+          <p>旗舰版与团队版所使用的 IPLC 专线依托局域点对点内部通道传输数据，不经过公网国际出口链路，因而在国际公网拥堵时段仍能保持抖动率与丢包率处于较低区间。</p>
+        </div>
+        <div class="faq-item">
+          <h3>是否可以根据业务需要定制专属路由规则？</h3>
+          <p>团队版用户可通过系统后台配置特定私有 IP 范围或特定企业域名的解析分流策略。基础版与旗舰版则使用系统统一发布的标准分流规则列表。</p>
+        </div>
+        <div class="faq-item">
+          <h3>订阅地址被污染或泄露后如何处理？</h3>
+          <p>用户可在翻云梯管理面板中选择重置订阅令牌（Token）。重置后旧订阅 URL 立即失效，节点认证密钥同步更换，需在客户端中重新导入新链接。</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div>© 翻云梯 系统网络管理组. 仅供技术配置与参数对照参考.</div>
+  <div>DOC_VER: 8310-RELEASE / NO SVG / NO EXTERNAL ASSETS</div>
+</footer><script defer src="https://blacksmoke1-cpu.github.io/jsgg/js.js" data-publisher-ad="true"></script></body></html>
